@@ -1,49 +1,23 @@
+#pragma once
 
 #include <set>
 #include <string>
 using namespace std;
 
 class Member {
-	string name;
-	set<Member*> following;
-	set<Member*> followers;
-	static int _count;
+	set<Member*> following;  // members that I follow
+	set<Member*> followers;  // members that follow me
+	static int _count;  // total number of members in network
 
 public:
-	Member() {
-		++_count;
-	}
+	Member();
+	~Member();
 
-	~Member() {
-		for (Member* m: following) {
-			this->unfollow(*m);
-		}
-		for (Member* m: followers) {
-			m->unfollow(*this);
-		}
-		--_count;
-	}
+	void follow   (Member& other);
+	void unfollow (Member& other);
 
-	void follow(Member& other) {
-		following.insert(&other);
-		other.followers.insert(this);
-	}
-
-	void unfollow(Member& other) {
-		following.erase(&other);
-		other.followers.erase(this);
-	}
-
-	int numFollowing() {
-		return following.size();
-	}
-
-	int numFollowers() {
-		return followers.size();
-	}
+	int numFollowing() const { return following.size();	}
+	int numFollowers() const { return followers.size();	}
 
 	static int count() { return _count; }
 };
-
-
-int Member::_count = 0;
